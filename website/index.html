@@ -180,8 +180,8 @@
                 <p id="doneTraining" hidden><b>Training complete!</b><br> We've now added 4 new MidiMe sliders to Step 1: these super slliders control the features that make the random samples sound like <b>your</b> input. Go slide them around and see how the samples change!<br>
                 </p>
                 <div id="duringTraining" hidden>
-                    <p>Training step: <b id="trainingStep">0</b> / <span id="totalSteps">100</span></p>
-                    <p>To check how well we're training the model, we can track its error reconstructing your uploaded file. We're not looking for it to become exactly 0 -- just to go down and flatten out. </p>
+                    <p class="py-2">Training step: <b id="trainingStep">0</b> / <span id="totalSteps">100</span></p>
+                    <p class="py-2">The plot below shows how the error is tracking over time. A model that has its error flatten out is best! </p>
                     <div class="py-2">
                         <svg id="trainingGraph" width="300"></svg>
                     </div>
