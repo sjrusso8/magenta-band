@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>AI Band</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
+    <link rel="stylesheet" href="./static/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@magenta/music@1.9.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@5.7.0/dist/d3.min.js"></script>
+</head>
+
+<body class="leading-normal tracking-normal text-white bg-gray-900" style="font-family: Source Sans Pro, sans-serif;">
+    <div class="h-max" id="splashScreen">
+        <div class="container px-5 md:px-20 mx-auto flex flex-wrap flex-col md:flex-row items-center">
+            <div class="flex h-screen justify-items-center">
+                <p class="text-6xl md:text-8xl mt-72 uppercase tracking-wider font-bold"><i>A.I.</i> BAND</p>
+            </div>
+            <div class="animate-bounce flex absolute bottom-10">
+                <svg width='32' height='32' xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                </svg>
+                <p class="text-xs italic py-2 pl-1">Scroll</p>
+            </div>
+        </div>
+        <section class="bg-gray-800 h-screen py-10">
+            <div class="container px-5 md:px-20 mx-auto flex flex-wrap flex-col md:flex-row items-center">
+                <div class="flex py-2 ">
+                    <h2 class="tracking-wider text-lg md:text-4xl uppercase italic px-2 pr-2 border-r-2 border-red-800">Meet the Band</h2>
+                    <h3 class="tracking-wide text-xs md:text-lg uppercase px-2 text-yellow-500">
+                        <p>You control the band</p>
+                        <p>Train the model how you like</p>
+                    </h3>
+                </div>
+                <div class="pl-4 md:pl-12">
+                    <h2 class="font-bold tracking-widest uppercase"><i>A.I.</i> Band</b></h2> 
+                    <div class="flex">
+                            <div class="border-t-4 border-red-800 px-4">
+                            </div>
+                            <div class="pr-4 pt-2 text-sm">
+                                <p class="py-1"><b>Welcome to the band!</b>  This band is all built on a machine learning technology, and can be trained to sound like you. No need for you to code complex neural nets because all the training for the model happens directly in the browser using TensorFlow.js. </p>
+                                <p class="py-1">   
+                                    The model uses a file type called <i>Midi</i>. 
+                                    A <i>Midi</i> file stores information used to capture event messages that specify the instructions to make music.  
+                                    Including a note's sequence, notation, pitch, velocity, vibarto, panning, and tempo.  This type of file is ideal for creating a machine learning model to learn how to sequence notes together to make a somewhat descent melody.</p>
+                                <p class="py-1 pb-4 border-b-2 border-red-800">
+                                    By leveraging <i>TensorFlow.js</i> and <i>Magenta</i>, a very powerful model can be trained to create a melody in the same style as an inputted Midi file.  That midi file can be one that you created or one you supplied from the internet.  This band is able to adapt very fast!
+                                </p>
+                                <div class="pt-4">
+                                    <p class="pb-2"><b>Now you have two choices...</b></p> 
+                                    <p>You can join the band and take it to new heights! The band will output a multi-instrument track allowing you to take center stage and play the lead.</p>
+                                </div>
+                                <p>Or... You can go your own way and break up the band.  Go solo and make your own melodies. Take your chance with your own solo career!</p>
+                            </div>
+                        </div>
+                        <div class="flex justify-evenly p-4">
+                            <a href="/solo" id="btnGoMelodies" class="m-4 p-2 px-4 bg-green-500 rounded-md test-sm md:text-md tracking-wide font-bold hover:bg-green-800" data-navigo>Go Solo!</a>
+                            <a href="/band" id="btnGoTrios" class="m-4 p-2 px-2 bg-green-500 rounded-md test-sm md:text-md tracking-wide font-bold  hover:bg-green-800" data-navigo>Join the Band!</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <main class="full text-black" id="mainScreen" hidden>
+        <div class="relative text-left m-auto">
+            <div class="text-center py-4 text-white">
+                <h1 class="text-xl md:text-2xl uppercase tracking-wider font-bold"><span id="modeText"></h1>
+            </div>
+
+
+            <section class="p-4 bg-white rounded-md text-left"id="section_1">
+                <h2 class="font-bold text-2xl">Get to mixin!</h2>
+
+                <p class="py-2">
+                    So here how it works.  This machine learning model leverages the <a class="text-blue-500" href="https://magenta.tensorflow.org/music-vae"><i>MusicVAE</i></a> library which has been trained on a lot of midi files.  
+                    The model produces its best guess at either melodies or a full band of music.  So for your purposes the model will either generate a single melody to help jump start your solo music career, or it can be your background band.
+                </p>
+                <p class="py-2">
+                    If the output isn't something you like, use the mixing board below to tweek the importance of the model features.  There are over 256 different features, and the sliders only represent a small handful of them.
+                </p>
+                <p class="pt-4 font-bold text-lg tracking-wide">
+                    Use the mixer to change the output!
+                </p>
+                <b><p id="loadingStatus">Loading model...</p></b>
+
+                <div class="m-4" id="afterLoading" hidden>
+                    <div class="flex flex-row justify-around items-center">
+                        <div class="sliders-container">
+                            <svg id="lines"></svg>
+                            <div class="flex flex-row justify-around items-center" id="mvaeSliders"></div>
+                        </div>
+                    </div>
+
+                    <p class="py-2 font-bold text-lg tracking-wide">
+                        Play the sample
+                    </p>
+                    <div class="relative">
+                        <div class="overflow-auto h-auto border-2 border-black bg-blue-100">
+                            <button id="btnPlaySample" class="button-circle" aria-label="play">
+                                <svg class="iconPlay" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/><path d="M0 0h24v24H0z" fill="none"/></svg>
+                                <svg class="iconStop" hidden xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M6 6h12v12H6z"/></svg>      
+                            </button>
+                            <svg id="vizSample"></svg>
+                        </div>
+                    </div>
+                    <br>
+                    <p>
+                        <button class="m-2 p-2 px-2 bg-green-500 rounded-md text-white test-sm md:text-md tracking-wide font-bold hover:bg-green-800" id="btnSample" disabled>Get Another Sample</button> or 
+                        <button id="saveBtn" class="m-2 p-2 px-2 bg-green-500 rounded-md text-white test-sm md:text-md tracking-wide font-bold hover:bg-green-800">save this sample</button>
+                    </p>
+                </div>
+            </section>
+
+            <section class="mt-4 p-4 bg-white rounded-md text-left" id="section_2" hidden>
+                <h2 class="font-bold text-2xl">Don't like it? Retrain it!</h2>
+
+                <div class="py-2">
+                    <p class="">Since the first model wasn't doing it for you.  Try retraining a model based on the music you made or a Midi file you found on the internet.</p>
+                    <div>    
+                        <label class="text-white m-4 p-2 px-4 bg-green-500 rounded-md test-sm md:text-md tracking-wide font-bold hover:bg-green-800" id="fileBtn">
+                            load a midi file
+                            <input type="file" id="fileInput" multiple>
+                        </label>
+
+                        <b>or</b>
+                            if you have the direct URL of a file you can use that too:
+                            <input id="urlInput" type="text" value="https://bitmidi.com/uploads/67995.mid">
+                            <button id="urlBtn" class="inline-block text-white m-4 p-2 px-4 bg-green-500 rounded-md test-sm md:text-md tracking-wide font-bold hover:bg-green-800">
+                                load from url
+                            </button>
+                    </div>
+                </div>
+                <b><p id="status" hidden></p></b>
+
+                <div id="input" hidden>
+                    <p class="py-2 font-bold text-lg tracking-wide">
+                        This is what you loaded
+                    </p>
+                    <div class="relative">
+                        <button id="btnPlayInput" class="button-circle" aria-label="play">
+                            <svg class="iconPlay" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/><path d="M0 0h24v24H0z" fill="none"/></svg>
+                            <svg class="iconStop" hidden xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M6 6h12v12H6z"/></svg>      
+                        </button>
+                        <div class="overflow-auto h-auto border-2 border-black bg-blue-100">
+                            <svg id="vizInput"></svg>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mt-4 p-4 bg-white rounded-md text-left" id="section_3" hidden>
+                <div id="hasMelody" hidden>
+                    <h2 class="py-2 font-bold text-lg tracking-wide">
+                        Main Musical Idea 
+                    </h2>
+                    <p class="py-2">
+                        That Midi file had a few different instruments.  So this is what <i>we think</i> is the overall melody of the song.
+                    </p>
+                    <div class="relative">
+                        <button id="btnPlayMelody" class="button-circle" aria-label="play">
+                            <svg class="iconPlay" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/><path d="M0 0h24v24H0z" fill="none"/></svg>
+                            <svg class="iconStop" hidden xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M6 6h12v12H6z"/></svg>      
+                        </button>
+                        <div class="overflow-auto h-auto border-2 border-black bg-blue-100">
+                            <svg id="vizMelody"></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="py-4" id="beforeTraining">
+                    By using that file you inputted, the model will be retrained to emulate that style of music.  This is only a fraction of the whole retraining process.  To truely retrain the full model that would take forever and require a lot of computing power.
+                    MusicVAE allows model to be trained just within your browser in a short amount of time.  So you'll be rockin in no time!
+                </p>
+                    
+                <p> Start retraining by inputting the number of steps. The more steps the better the output! (<i>potentially</i>)<button class="text-white m-4 p-2 px-4 bg-green-500 rounded-md test-sm md:text-md tracking-wide font-bold hover:bg-green-800" id="btnTrain">Retrain!</button> for <input id="trainingSteps" value="100" type="tel"> steps.
+                </p>
+                <p id="doneTraining" hidden><b>Training complete!</b><br> We've now added 4 new MidiMe sliders to Step 1: these super slliders control the features that make the random samples sound like <b>your</b> input. Go slide them around and see how the samples change!<br>
+                </p>
+                <div id="duringTraining" hidden>
+                    <p>Training step: <b id="trainingStep">0</b> / <span id="totalSteps">100</span></p>
+                    <p>To check how well we're training the model, we can track its error reconstructing your uploaded file. We're not looking for it to become exactly 0 -- just to go down and flatten out. </p>
+                    <div class="py-2">
+                        <svg id="trainingGraph" width="300"></svg>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+</body>
+<script src="//unpkg.com/navigo"></script>
+<script src="./static/js/helpers.js"></script>
+<script src="./static/js/script.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js" defer></script>
+
+</html>
